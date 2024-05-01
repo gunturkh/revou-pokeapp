@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 const API_KEY = '1853e815e89d4a7fbd8933044f149af3'
 const NEWS_URL = 'https://newsapi.org/v2/everything'
 
@@ -50,7 +51,7 @@ function News() {
             Authorization: API_KEY
         }
     }
-    const getNews = useCallback(async (searchString: string) => {
+    const getNews = async (searchString: string) => {
         try {
             setLoading(true)
             const response = await fetch(`${NEWS_URL}?q=${searchString}`, options)
@@ -66,17 +67,17 @@ function News() {
             setLoading(false)
         }
 
-    }, [options])
+    }
     const onChangeNewsSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value)
     }
     useEffect(() => {
         getNews(search)
-    }, [getNews, search])
+    }, [search])
 
     useEffect(() => {
         if (debouncedSearchTerm) getNews(debouncedSearchTerm)
-    }, [debouncedSearchTerm, getNews])
+    }, [debouncedSearchTerm])
 
     return (
         <div className='flex justify-center h-screen'>
