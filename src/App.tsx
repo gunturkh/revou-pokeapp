@@ -2,7 +2,6 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
-import { useState } from 'react';
 import News from './pages/News';
 
 function App() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 const API_KEY = '1853e815e89d4a7fbd8933044f149af3'
 const NEWS_URL = 'https://newsapi.org/v2/everything'
 
@@ -32,7 +32,7 @@ type Articles = {
     content: string
 
 }
-type News = {
+type New = {
     articles: Articles[],
     status: string,
     totalResults: number,
@@ -40,16 +40,17 @@ type News = {
 
 function News() {
     const [search, setSearch] = useState('bitcoin')
-    const [newsData, setNewsData] = useState<News | null>(null)
+    const [newsData, setNewsData] = useState<New | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const debouncedSearchTerm = useDebouncedValue(search, 500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const options = {
         method: 'GET',
         headers: {
             Authorization: API_KEY
         }
     }
-    const getNews = async (searchString: string) => {
+    const getNews = useCallback(async (searchString: string) => {
         try {
             setLoading(true)
             const response = await fetch(`${NEWS_URL}?q=${searchString}`, options)
@@ -65,17 +66,17 @@ function News() {
             setLoading(false)
         }
 
-    }
+    }, [options])
     const onChangeNewsSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value)
     }
     useEffect(() => {
         getNews(search)
-    }, [])
+    }, [getNews, search])
 
     useEffect(() => {
         if (debouncedSearchTerm) getNews(debouncedSearchTerm)
-    }, [debouncedSearchTerm])
+    }, [debouncedSearchTerm, getNews])
 
     return (
         <div className='flex justify-center h-screen'>
